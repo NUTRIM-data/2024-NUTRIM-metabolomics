@@ -73,7 +73,7 @@ library(MetabolAnalyze) # contains pareto-scaling
 
 ```{r}
 # We also load an R script, with some useful functions we're going to use today.
-source("functions.R") 
+source(here("functions.R"))
 ```
 
 # Read and inspect data 🔍
@@ -81,7 +81,7 @@ source("functions.R")
 Read the metabolites' relative concentrations table, stored in a a `.csv` file.
 
 ```{r}
-metabolites <- read.csv(file = here("data/papa2012/processed/metabolites_short.csv"), row.names = 1)
+metabolites <- read.csv(file = here("data:papa2012/processed/metabolites_short.csv"), row.names = 1)
 ```
 
 ```{r}
@@ -91,7 +91,7 @@ metabolites[1:10, 1:10]
 Read the metabolites metadata file, stored in a `.cvs` file.
 
 ```{r}
-metadata_metabolites <- read.csv(file = here("data/papa2012/processed/metadata_metabolites.csv"), row.names = 1)
+metadata_metabolites <- read.csv(file = here("data:papa2012/processed/metadata_metabolites.csv"), row.names = 1)
 ```
 
 ```{r}
@@ -378,7 +378,7 @@ library(plotly) # interactive plots
 
 ## PCA model
 
-To perform PCA, we can use `prcomp` function, which has a folliwing structure:
+To perform PCA, we can use `prcomp` function, which has the following structure:
 
 ```{r}
 #| eval: false
@@ -388,11 +388,11 @@ prcomp(data,
        scale = TRUE)
 ```
 
-Note, that `prcomp` automatically performs autoscaling, however we can control this with parameters `center` and `scale`.
+Note, that `prcomp` automatically performs auto scaling, however we can control this with parameters `center` and `scale`.
 
-It's important to autoscale the data before PCA, to give the equal importance to variables in the data, to avoid them "dragging" the decomposition towards some. variables.
+It's important to auto scale the data before PCA, to give the equal importance to variables in the data, to avoid them "dragging" the decomposition towards some. variables.
 
-#### **TASK 1** 
+#### **TASK 1**
 
 Let's compute our first PCA:
 
@@ -450,9 +450,9 @@ ggplot(pca$x, aes(x = PC1,
 ```
 
 ::: {.callout-note collapse="true"}
-##### What happens if we don't autoscale?
+##### What happens if we don't auto scale?
 
-Let's look at the score plot, if we would skip autoscaling.
+Let's look at the score plot, if we would skip auto scaling.
 
 ```{r, message=FALSE}
 #| fig-align: "center"
@@ -468,30 +468,28 @@ ggplot(pca_plain$x, aes(x = PC1,
        y =  paste0("PC2 (",round(get_eigenvalue(pca_plain)[2,2],2),"%)")) +
   theme_bw()
 ```
-The larger variables pull the decomposition towards them, therefore we are not able to distinguish between variables. 
+
+The larger variables pull the decomposition towards them, therefore we are not able to distinguish between variables.
 :::
 
 ## Outliers
 
-Notice on our scales PCA plot how some of the samples lay furhter away from the clump of points. Those points are potential **outliers**.
+Notice on our scales PCA plot how some of the samples lay further away from the clump of points. Those points are potential **outliers**.
 
 We can make an interactive plot and inspect which samples are outlying by pointing a cursor over points. For that, we can use `ggplotly` function from `plotly` package.
+
 ```{r, message=FALSE}
 #| fig-align: "center"
 #| code-fold: true
-p <- ggplot(pca$x, aes(x = PC1, 
+p <- ggplot(as.data.frame(pca$x), aes(x = PC1, 
                        y = PC2, 
                        z = rownames(pca$x),
                        color = metadata_metabolites$Diagnosis)) +
   geom_point() +
   theme_bw()
 
-#ggplotly(tooltip = c("x", "y", "z", "color"))
+ggplotly(p)
 ```
-
-
-
-
 
 Note that scale = TRUE cannot be used if there are zero or constant (for center = TRUE) variables.
 
