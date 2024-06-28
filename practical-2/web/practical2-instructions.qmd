@@ -1,0 +1,46 @@
+---
+title: "Day 2 - Practical 1 - basic metabolomics data analysis"
+subtitle: "2024 NUTRIM microbiome & metabolome workshop"
+author: Michal Skawinski
+editor: visual
+date: last-modified
+keep-md: false
+theme: 
+  light: flatly
+  dark: darkly
+format: html
+embed-resources: true
+code-block-border-left: true
+code-block-bg: true
+toc: true
+toc-location: right
+toc-depth: 4
+toc-expand: 3
+number-sections: true
+number-depth: 3
+fig-align: center
+fig-dpi: 300
+fig-width: 7.5
+fig-height: 5
+fig-responsive: true
+code-tools: true
+code-fold: false
+code-link: true
+code-annotations: below
+lightbox: auto
+cache: false
+---
+
+# Intro
+
+In this tutorial, we are going to explore some more advanced methods, URF and ASCA (ANOVA Simultaneous Component Analysis). 
+
+# Session info
+
+<details>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
