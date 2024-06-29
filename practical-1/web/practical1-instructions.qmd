@@ -70,9 +70,12 @@ In the first part, we're going to foucus on the basic concepts in metabolomics d
 
 ```{r}
 #| output: false
+#| message: false
 library(here)
 library(tidyverse)
-library(MetabolAnalyze) # contains pareto-scaling
+library(MetabolAnalyze) # contains pareto scaling
+library(reshape2) # data manipulation
+library(plotly) # interactive plots
 ```
 
 ```{r}
@@ -482,11 +485,60 @@ The larger variables pull the decomposition towards them, therefore we are not a
 
 ## Loadings 🚚
 
-TODO: Loadings
+From PCA model we also obtain our loadings. Let's visualize loadings plots (bar plots) for the first two PC's:
+```{r}
+#| code-fold: true
+#| message: false
+# First, we need to reshape our data into a long format using melt() function:
+loadings <- melt(as.data.frame(pca$rotation) %>%
+                   mutate(metabolite = rownames(pca$rotation)),
+                 id.vars = "metabolite") 
+
+ggplot(loadings %>%
+         filter(variable %in% c("PC1", "PC2")), 
+            aes(x = metabolite, y = value)) +
+  geom_bar(stat="identity", alpha = 0.8, position = "stack", width = 0.5) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90)) +
+  facet_wrap(~variable, ncol = 2)
+```
+
+We can set a threshold or choose top x metabolites, that have the biggest influence on the decomposition:
+```{r}
+#| code-fold: true
+#| message: false
+#| warning: false
+ggplot(loadings %>%
+         filter(variable %in% c("PC1", "PC2")), 
+            aes(x = metabolite, y = value)) +
+  geom_bar(stat="identity", alpha = 0.8, position = "stack", width = 0.5) +
+  theme_bw() +
+  geom_hline(yintercept = c(0.08, -0.08), linetype="dotted", linewidth = 0.3, color = "red") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  facet_wrap(~variable, ncol = 2)
+```
+
+To select the metabolites, that are over or below selected threshold, e.g. `0.08`, we can type:
+```{r}
+important_metabolites <- loadings$metabolite[which(abs(loadings$value) > 0.08 & loadings$variable == "PC1")]
+important_metabolites
+
+```
 
 ## Biplot 
 
-TODO: biplot
+We can also visualize the scores and loadings at the same time! This is called **biplot**.
+
+For that, we can use `biplot`, but we are going to use `fviz_pca_biplot` from the `factoextra` package,which is an ggplot object:
+```{r}
+fviz_pca_biplot(pca,
+                col.var = "#2E9FDF", # Variables color
+                col.ind = "#696969",  # Individuals color
+                select.var = list(name = important_metabolites), # Plot only important metabolites
+                label = "var" # label only variables
+                
+)
+```
 
 ## Outliers
 
