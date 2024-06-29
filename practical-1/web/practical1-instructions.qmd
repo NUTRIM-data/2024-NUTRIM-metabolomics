@@ -33,7 +33,7 @@ cache: false
 
 # Intro
 
-TODO (study doesnt exist) Today we're going to look at the metabolomics data, from the same Papa et al. 2012 study on paediatric IBD patients and controls. Note that those data corresponds to the same samples we used yesterday.
+Today we're going to look at the metabolomics data, from the study on IBD patients and controls. Note that those data corresponds to the same samples we used yesterday. It's just another omics, that requires a different approach to data analysis 😉
 
 ::: {.callout-note collapse="true"}
 ### A note on metabolomics data processing
@@ -42,9 +42,13 @@ The data we will use today come from Liquid Chromatography-Mass Spectrometry (**
 
 #### Raw data and chromatograms
 
-Usually, for the detection of metabolites we use mass spectrometry, coupled to other technologies (like liquid or gas chromatography), depending on the sample characteristics and study aims. The raw data consists of chromatograms showing peaks of intensity of detected metabolites against their mass-to-charge ratios (see figure below:)
+Usually, for the detection of metabolites Nuclear Magnetic Resonance or mass spectrometry (MS), coupled to other technologies (like liquid or gas chromatography) is used, depending on the sample characteristics and study aims.
 
-![How to read a chromatogram?](figures/chromatogram.jpeg){fig-align="center"}
+The raw MS data consists of chromatograms showing peaks of intensity of detected metabolites over time (see figure below @fig-tic), mass spectrum and retention time.
+
+
+![Total Ion Chromatogram](images/TIC.png){fig-align="center" #fig-tic}
+
 
 #### Common preprocessing steps
 
@@ -53,9 +57,8 @@ In short, data processing perform peaks detection, retention time alignment and 
 PS. The detailed data generation protocols can be found [here](https://ibdmdb.org/protocols).
 :::
 
-In this part, we're going to foucus...
+In the first part, we're going to foucus on the basic concepts in metabolomics data analysis: data pretreatment and dimensionality reduction (PCA).
 
-In the second part we will focus on more advanced data exploration methods for metabolomics.
 
 # Learning goals 💪
 
@@ -65,7 +68,6 @@ TODO - Practice general R skills to inspect ... -
 
 ```{r}
 #| output: false
-library(readxl)
 library(here)
 library(tidyverse)
 library(MetabolAnalyze) # contains pareto-scaling
@@ -364,7 +366,7 @@ hist(sqrt_metabolites_pqn[,1],
 ```
 :::
 
-# Principal Component Analysis
+# Principal Component Analysis 
 
 We are going to run some PCA analysis on metabolites data and plot the results. It's a great **unsupervised tool** to explore the data and identify any potential outliers, clusterings and structure in the data.
 
@@ -427,7 +429,7 @@ str(pca)
 3.  **x** - scores
 :::
 
-## Visualizing the results
+## Visualizing the results 🎇
 
 We can visualize the percentage of explained varaince for each compount using plot.
 
@@ -472,7 +474,7 @@ ggplot(pca_plain$x, aes(x = PC1,
 The larger variables pull the decomposition towards them, therefore we are not able to distinguish between variables.
 :::
 
-## Outliers
+## Outliers 
 
 Notice on our scales PCA plot how some of the samples lay further away from the clump of points. Those points are potential **outliers**.
 
@@ -491,21 +493,50 @@ p <- ggplot(as.data.frame(pca$x), aes(x = PC1,
 ggplotly(p)
 ```
 
-Note that scale = TRUE cannot be used if there are zero or constant (for center = TRUE) variables.
+Let's remove the outliers and see how it changes the results.
 
-plot() print()
+::: {.callout-important collapse="true"}
+##### Watch out when removing outliers!
 
-TODO: later PCA (1: not scaled, 2: scaled + log ),
+Outliers can be due to the errors in sampling, but they also result from an important biological property. Before removing any outliers, it's important to further check why those samples are different from the rest and decide on what to do with them.
+:::
 
-URF: normalized library(factoextra) library(randomForest) urf \<- script_URF(nr_itteration = 100, real_data = metabolites_pqn, nr_trees = 1500, nr_samples = 8, class = metadata_metabolites\$Diagnosis)
+To remove outliers, we can either filter by the scores values, by using `which()` or directly by names. For example:
 
-ggplot(as.data.frame(urf$pc$x), aes(x = PC1, y = PC2, z = rownames(metabolites_pqn))) + geom_point(aes(color = metadata_metabolites$Diagnosis)) + labs(x = paste0("PC1 (",round(urf$pr\[1,2\],2),"%)"), y = paste0("PC2 (",round(urf\$pr\[2,2\],2),"%)")) + theme_bw()
+```{r, message=FALSE}
+#| eval: false
+#| output: false
+metabolites_pqn[which(! metadata_metabolites$SampleID %in% c("PSM7J177", "HSM6XRS8")), ]
+```
 
-ASCA: synthetic time point (divide) .rs.restartR() \# faktory: mlodzi vs adults
+will filter out the samples, that are not any of the specified ones. Note `!` at the beggining of the function, which can be translated to "not".
 
-table(metadata_metabolites_small$diagnosis[(which(metadata_metabolites_small$consent_age \<18))\])
+Let's remove samples with `PC2 > 20`and perform pca on that.
 
-table(metadata_metabolites_small$diagnosis[(which(metadata_metabolites_small$consent_age \>= 18 & metadata_metabolites_small\$consent_age \<= 60))\])
+```{r, message=FALSE}
+#| fig-align: "center"
+#| code-fold: true
+pca_reduced <- prcomp(metabolites_pqn[which(pca$x[,2] <= 20),] , 
+       center = TRUE, 
+       scale = TRUE)
+ggplot(pca_reduced$x, aes(x = PC1, 
+                        y = PC2,
+                        color = metadata_metabolites$Diagnosis[which(pca$x[,2] <= 20)])) +
+  geom_point() +
+  labs(x = paste0("PC1 (",round(get_eigenvalue(pca_reduced)[1,2],2),"%)"), 
+       y =  paste0("PC2 (",round(get_eigenvalue(pca_reduced)[2,2],2),"%)")) +
+  theme_bw()
+```
+
+After removal of those outliers, new outliers can pop out. Remember, after any treatment that changes the distances between samples (e.g. log transformation), the identified outliers can differ.
+
+# Next ⏭️
+
+-   Good job! 🎉 You have finished this tutorial! Now you should be able to use different pretreatment methods and apply PCA in R.
+
+-   At the next session after lunch, we will explore more fancy methods for metabolomics data analysis!
+
+-   TODO: Click here: [https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2-instructions.html](...)
 
 # Session info
 
