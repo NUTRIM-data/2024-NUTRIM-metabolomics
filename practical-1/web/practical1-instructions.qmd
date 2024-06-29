@@ -44,11 +44,11 @@ The data we will use today come from Liquid Chromatography-Mass Spectrometry (**
 
 Usually, for the detection of metabolites Nuclear Magnetic Resonance or mass spectrometry (MS), coupled to other technologies (like liquid or gas chromatography) is used, depending on the sample characteristics and study aims.
 
-The raw MS data consists of chromatograms showing peaks of intensity of detected metabolites over time (see figure below @fig-tic), mass spectrum and retention time.
+The raw MS data consists of chromatograms showing peaks of intensity of detected metabolites over time (see @fig-tic), mass spectrum (see @fig-ms) and retention time.
 
+![Total Ion Chromatogram](images/TIC.png){#fig-tic fig-align="center"}
 
-![Total Ion Chromatogram](images/TIC.png){fig-align="center" #fig-tic}
-
+![Mass spectrum](images/ms.png){#fig-ms fig-align="center"}
 
 #### Common preprocessing steps
 
@@ -59,10 +59,12 @@ PS. The detailed data generation protocols can be found [here](https://ibdmdb.or
 
 In the first part, we're going to foucus on the basic concepts in metabolomics data analysis: data pretreatment and dimensionality reduction (PCA).
 
-
 # Learning goals 💪
 
-TODO - Practice general R skills to inspect ... -
+-   Understand the effect of data pretreatment (normalization, transformation and scaling) on metabolomics data analysis
+-   Read and inspect the data in R
+-   Apply different pretreatment methods in R
+-   Perform PCA analysis and visualization in R
 
 # Load R packages and some functions 📦
 
@@ -107,7 +109,7 @@ head(metadata_metabolites)
 
 -   Samples are stored in rows, e.g. `CSM5FZ3T`, `CSM5FZ44`
 -   Metabolites are stored in columns, in the form of relative concentrations
--   Note, that the metabolites don't have identifiers. It's because we have not identified the specific metabolites yet and those variables represent a detected ion with unique properties, based on which we can later try to identify the metabolite.
+-   Note, that the metabolites don't have identifiers. It's because we have not identified the specific metabolites yet and those variables represent a detected ion with unique properties, based on which we can later try to identify the metabolites by comparing retention times and mass spectra with known standards or databases.
 -   Additionally, to reduce the computation time we have chosen only a subset of the original metabolites and samples.
 
 #### Metadata
@@ -184,12 +186,10 @@ We will explore their impact and importance on the data distribution as well as 
 
 ## Normalization: {#normalization}
 
-TODO explain here ..
+We apply normalization of our data to reduce the *effect size* of huge variations in the metabolite concentration and make the samples more comparable. Normalization is *sample-wise* (per sample), whereas scaling or transformation are *column-wise* (per metabolite).
 
 ::: panel-tabset
 ##### Probabilitic Quotient Normalization (pqn)
-
-TODO explain pqn here
 
 The structure of the function we have provided is as follows:
 
@@ -211,9 +211,9 @@ metabolites_pqn <- pqn(metabolites)
 
 ##### Total Area Normalization (TAN)
 
-TODO: explain TAN here: For each sample, every metabolite intensity value is vivided divided by the total sum of all metabolite intensity values measured in that sample (\code{NA} values ignored by default), before multiplication by 100. The unit is %.
+For each sample, every metabolite intensity value is divided by the total sum of all metabolite intensity values measured in that sample (`NA` values ignored by default), before multiplication by 100. The unit is %.
 
-We have provided TAN normalization in a function called `normalisze_tan()`, which is analogical to the pqn function:
+We have provided TAN normalization in a function called `normalise_tan()`, which is analogical to the pqn function:
 
 ```{r}
 #| eval: false
@@ -230,11 +230,15 @@ metabolites_tan <- normalize_tan(metabolites)
 ```
 :::
 
-From here, we are going to use pqn normalized metabolites data for further analysis.
+From here, we are going to use pqn normalized metabolites data for consequent analysis.
 
 ## Scaling & transformation {#scaling_transformation}
 
-TODO: explain transformation TODO: explain scaling and when and where
+Unlike normalization or scaling, **data transformation** is a nonlinear pretreatment method. It is applied to a normalized data to **correct for the data heteroscedasticity and skewness**, transforming the distribution closer to the Gaussian one, and stabilizing the variance.
+
+**Data scaling** aims to c**orrect for between-compounds variation** by applying a scaling factor to the variables (which can vary for each metabolite) and give them a comparable influence on data variance.
+
+Moreover, many multivariate methods require scaled or transformed data to work properly. Ther
 
 Let's inspect how the distribution changes before and after transformation/scaling, based on the first metabolite in our data:
 
@@ -246,8 +250,6 @@ hist(metabolites_pqn[,1],
 
 ::: panel-tabset
 ##### Auto scaling
-
-TODO explain autoscaling here
 
 Auto scaling is already implemented in the base R, as a `scale()` function.
 
@@ -262,13 +264,17 @@ Inspect the `scale()` function. A manual in the 'Help' tab of RStudio should ope
 
 ###### **TASK 2**
 
+Based on the information in the manual answer the following question: [what arguments does the `scale()` function specify and what do they control?]{.underline}
+
+###### **TASK 3**
+
 Let's **auto scale** the data. For this, we need to specify parameter's values `center=TRUE` and `scale=TRUE`.
 
 ```{r}
 autoscaled_metabolites_pqn <- scale(metabolites_pqn,center = TRUE, scale = TRUE)
 ```
 
-###### **TASK 3**
+###### **TASK 4**
 
 Let's scale the data and plot the distribution of the first metabolite after **auto scaling**.
 
@@ -280,13 +286,11 @@ hist(autoscaled_metabolites_pqn[,1],
 
 ##### Pareto scaling
 
-TODO: explaing pareto scaling
-
 To compute pareto scaling, we can use `scaling()` function from the `MetabolAnalyze` package.
 
 ###### **TASK 1**
 
-Inspect the `scale()` function. A manual in the 'Help' tab of RStudio should open providing explanation and example usage of the function:
+Inspect the `scaling()` function. A manual in the 'Help' tab of RStudio should open providing explanation and example usage of the function:
 
 ```{r}
 # execute the code ----->
@@ -295,13 +299,17 @@ Inspect the `scale()` function. A manual in the 'Help' tab of RStudio should ope
 
 ###### **TASK 2**
 
+Based on the information in the manual answer the following question: [How does pareto scaling work?]{.underline}
+
+###### **TASK 3**
+
 Let's scale the data using **pareto scaling**. We need to specify a value of an argument `type`.
 
 ```{r}
 pareto_metabolites_pqn <- scaling(metabolites_pqn, type = "pareto")
 ```
 
-###### **TASK 3**
+###### **TASK 4**
 
 Let's plot the distribution of the first metabolite after **pareto scaling**.
 
@@ -315,7 +323,7 @@ hist(pareto_metabolites_pqn[,1],
 
 We have already explored the concept of log transformation yesterday.
 
-To log transform our data, we can simply use `log()`. By default, log10 is caluclated, but we can specify the base it in the `base` argument of the function:
+To log transform our data, we can simply use `log()`. By default, log10 is calculated, but we can specify the base it in the `base` argument of the function:
 
 ```{r}
 #| eval: false
@@ -343,13 +351,11 @@ hist(log_metabolites_pqn[,1],
 
 ##### Square root transformation
 
-TODO: explain square roorthere
-
 To square root transform our data, we can simply use `sqrt()`.
 
 ###### **TASK 1**
 
-Let's perfom **square root transformation** on the data.
+Let's perform **square root transformation** on the data.
 
 ```{r}
 sqrt_metabolites_pqn <- sqrt(metabolites_pqn)
@@ -366,7 +372,7 @@ hist(sqrt_metabolites_pqn[,1],
 ```
 :::
 
-# Principal Component Analysis 
+# Principal Component Analysis
 
 We are going to run some PCA analysis on metabolites data and plot the results. It's a great **unsupervised tool** to explore the data and identify any potential outliers, clusterings and structure in the data.
 
@@ -474,7 +480,15 @@ ggplot(pca_plain$x, aes(x = PC1,
 The larger variables pull the decomposition towards them, therefore we are not able to distinguish between variables.
 :::
 
-## Outliers 
+## Loadings 🚚
+
+TODO: Loadings
+
+## Biplot 
+
+TODO: biplot
+
+## Outliers
 
 Notice on our scales PCA plot how some of the samples lay further away from the clump of points. Those points are potential **outliers**.
 
@@ -536,7 +550,7 @@ After removal of those outliers, new outliers can pop out. Remember, after any t
 
 -   At the next session after lunch, we will explore more fancy methods for metabolomics data analysis!
 
--   TODO: Click here: [https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2-instructions.html](...)
+-   TODO: Click here: <https://github.com/michaljjskawinski/2024-NUTRIM-metabolomics/blob/main/practical-2/web/practical2-instructions.html>
 
 # Session info
 

@@ -1,5 +1,5 @@
 ---
-title: "Day 2 - Practical 1 - basic metabolomics data analysis"
+title: "Day 2 - Practical 2 - more advanced methods for metabolomics data analysis"
 subtitle: "2024 NUTRIM microbiome & metabolome workshop"
 author: Michal Skawinski
 editor: visual
@@ -29,11 +29,204 @@ code-link: true
 code-annotations: below
 lightbox: auto
 cache: false
+bibliography: references.bib
 ---
 
-# Intro
+# Intro 🔆
 
-In this tutorial, we are going to explore some more advanced methods, URF and ASCA (ANOVA Simultaneous Component Analysis). 
+In this tutorial, we are going to explore some more advanced methods and how to implement them in R:
+
+-   [**URF**](#urf) (Unsupervised Random Forest), and
+
+-   [**ASCA**](#asca) (ANalysis Of VAriance (ANOVA)-Simultaneous Component Analysis).
+
+# Load R packages and some functions 📦
+
+```{r}
+#| output: false
+library(here)
+library(tidyverse) # data cleaning 
+library(ggplot2) # visualizations
+source(here("functions.R"))  # URF functions
+library(randomForest) 
+library(factoextra) 
+library(limpca) # ASCA
+
+```
+
+# Read the data 🔍
+
+We are going to use the same data as before, so you should have it already stored in your environment. However if you restarted the R session, you can use the code below to read the data again:
+
+```{r}
+# Read metabolites data table
+metabolites <- read.csv(file = here("data:papa2012/processed/metabolites_short.csv"), row.names = 1)
+
+# PQN normalize it
+metabolites_pqn <- pqn(metabolites)
+
+# Read metadata
+metadata_metabolites <- read.csv(file = here("data:papa2012/processed/metadata_metabolites.csv"), row.names = 1)
+```
+
+# URF 🌲🌲🌲 {#urf}
+
+We have provided a function to perform URF in R:
+
+```{r}
+#| output: asis
+#| eval: false
+script_URF(nr_itteration, real_data, nr_trees, nr_samples, class) 
+```
+
+##### **TASK 1**
+
+View the code of the function. You don't need to understand or analyze the body of the function. Just look at the comments and try to analyze the inputs and outputs:
+
+```{r}
+print(script_URF)
+```
+
+What are the input arguments ? What are the outcome(s) of the function? Tip: Look what's inside the `return`.
+
+##### **TASK 2**
+
+Let's perform our first URF! Build a function with 1500 trees and 8 samples in a terminal node. Limit the number of iterations up to 10, which will speed up the computations (generally we would use around 100 iterations):
+
+::: {.callout-note collapse="true"}
+### Do you need to scale the data?
+
+URF is an non-linear method, therefore it will perform well with non-scaled data.
+:::
+
+```{r}
+# write your code here
+```
+
+::: {.callout-note collapse="true" appearance="simple"}
+##### SOLUTION:
+
+```{r}
+#| message: false
+#| output: false
+URF <- script_URF(nr_itteration = 1, real_data = metabolites_pqn, nr_trees = 1500, nr_samples = 8)
+```
+:::
+
+##### **TASK 3**
+
+Look at the structure of the resulting URF model:
+
+```{r}
+str(URF)
+```
+
+##### **TASK 4**
+
+Plot the URF score plot. Color the points by `Diagnosis`.
+
+```{r}
+ggplot(as.data.frame(URF$pc$x), 
+       aes(x = PC1, 
+           y = PC2,
+           color = metadata_metabolites$Diagnosis)) + 
+  geom_point() + 
+  labs(x = paste0("PC1 (",round(URF$pr[1,2],2),"%)"), 
+       y = paste0("PC2 (",round(URF$pr[2,2],2),"%)")) + 
+  theme_bw()
+```
+
+
+
+# ASCA {#asca}
+
+There are many versions of ASCA, depending on the application and **data design**. Today, we will only familiarize with one version: ASCA+ from the R package `limpca` [@thiel2023].
+
+More information about the package, as well as tutorials and examples with datasets can be found [here](https://bioconductor.org/packages/release/bioc/html/limpca.html).
+
+## ASCA - case study
+
+We are going to inspect the effect of the disease (nonIBD, UC, CD) and the duration of the disease on the metabolites' profiles. 
+
+In our data, we have multiple samples per participant. This comes from sampling of patients at different times. However, we are not interested in in as it doesn't follow any design.
+
+Therefore, we have provided a new file `metadata_metabolites_asca.csv` with the metadata of only selected samples from the same time points, which contains an additional variable, `Age_at_diagnosis`, that we are interested in here.
+
+##### **TASK 1**
+
+Read `metadata_metabolites_asca.csv`. How many samples do we have now?
+```{r}
+metadata_metabolites_asca <- read.csv(file = here("data:papa2012/asca/metadata_metabolites_asca.csv"), row.names = 1)
+nrow(metadata_metabolites_asca)
+```
+
+
+##### **TASK 2**
+
+We also need to select those samples from the metabolites data table (PQN normalized).
+```{r}
+metabolites_asca <- metabolites_pqn[which(rownames(metabolites_pqn) %in% metadata_metabolites_asca$SampleID), ]
+```
+
+##### **TASK 3**
+
+In the metadata, we don't have information on the duration of the disease. However, we know participants age and the age at diagnosis. Calculate the duration of the disease and assign it to a new vector `duration_of_disease`. Then, add the vector to `metadata_metabolites_asca`.
+```{r}
+# write your code below
+
+```
+
+::: {.callout-note collapse="true" appearance="simple"}
+##### SOLUTION:
+
+```{r}
+duration_of_disease <- metadata_metabolites_asca$Age - metadata_metabolites_asca$Age_at_diagnosis
+
+metadata_metabolites_asca$duration_of_disease <- duration_of_disease
+```
+:::
+
+
+
+## Create an ASCA object
+
+In order to use ASCA from the `limpca` package, the data need to be formatted as a list with the following elements:
+
+-   outcomes (multivariate matrix),
+
+-   design (data.frame) and
+
+-   formula (character string).
+
+First, create an empty list:
+```{r}
+ASCA_model <- list()
+```
+
+##### **Outcomes**
+TODO 
+
+
+##### **Design**
+TODO
+```{r}
+ASCA_model$design <- data.frame(metadata_metabolites)
+```
+
+##### **Formula**
+
+TODO
+
+## Perform ASCA
+
+
+
+
+table(metadata_metabolites_small$diagnosis[(which(metadata_metabolites_small$consent_age \<18))\])
+
+table(metadata_metabolites_small$diagnosis[(which(metadata_metabolites_small$consent_age \>= 18 & metadata_metabolites_small\$consent_age \<= 60))\])
+
+
 
 # Session info
 

@@ -79,13 +79,12 @@ pqn <- function(X) {
 # }
 
 ### URF FUNCTIONS FROM AGI (from Matlab to R)
-script_URF <- function(nr_itteration, real_data, nr_trees, nr_samples, class) {
+script_URF <- function(nr_itteration, real_data, nr_trees, nr_samples) {
   #Input arguments:
   # nr_itteration --> number of times the procedure should be repeated; e.g.50, 100
   # real_data --> data set (samples in row and variables in column
   # nr_trees --> number of trees in the RF; 1500 or more
   # nr_samples --> number of samples in a  terminal nodes, default is 1 but better to put higher number 5 or 8
-  # class --> class vector 
   
   #Outputs:
   #pc --> pca score plot
@@ -108,13 +107,6 @@ script_URF <- function(nr_itteration, real_data, nr_trees, nr_samples, class) {
                scale = FALSE)
   
   pc.eigval <- get_eigenvalue(pc)
-  
-  # Plot score plot
-  ggplot(as.data.frame(pc$x), aes(x = PC1, y = PC2)) +
-    geom_point(aes(color = class)) +
-    labs(x = paste0("PC1 (",round(pc.eigval[1,2],2),"%)"),
-         y =  paste0("PC2 (",round(pc.eigval[2,2],2),"%)")) +
-    theme_bw()
   
   return(list(pc = pc,
               pr = pc.eigval,
