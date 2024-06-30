@@ -2,9 +2,12 @@
 
 ## General links
 
-Timetable on Google sheets
+This readme: https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/
 
-posit.cloud free account signup - https://posit.cloud/plans/free
+Timetable on [Google sheets](https://docs.google.com/spreadsheets/u/0/d/1mt0nUgz8h7Lax0L2wGjKzeZomPlQbVFaPmd1gahLUqA/edit?usp=sharing&pli=1)
+
+posit.cloud - https://posit.cloud
+
 
 
 ## Practical Instructions
@@ -16,4 +19,9 @@ https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/practical-1/web/pra
 #### Practical 2 - more advanced methods
 
 https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/practical-2/web/practical2-instructions.html
+
+
+### Other links
+
+- GitHub repo for source material: https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/
 
