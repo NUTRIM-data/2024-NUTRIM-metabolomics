@@ -6,7 +6,6 @@ Timetable on Google sheets
 
 posit.cloud free account signup - https://posit.cloud/plans/free
 
-This readme as webpage - https://david-barnett.github.io/2024-NUTRIM-microbiome/readme.html
 
 ## Practical Instructions
 
