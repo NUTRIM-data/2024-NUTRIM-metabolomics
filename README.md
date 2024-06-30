@@ -2,8 +2,6 @@
 
 ## General links
 
-This readme: https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/
-
 Timetable on [Google sheets](https://docs.google.com/spreadsheets/u/0/d/1mt0nUgz8h7Lax0L2wGjKzeZomPlQbVFaPmd1gahLUqA/edit?usp=sharing&pli=1)
 
 posit.cloud - https://posit.cloud
