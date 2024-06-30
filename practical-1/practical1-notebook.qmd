@@ -48,7 +48,14 @@ You can add notes wherever you want and new code chunks!
 It is good practice to load all the packages and source or files you need at the top of your notebook.
 
 ```{r}
+library(here)
+library(tidyverse)
+library(MetabolAnalyze) # contains pareto scaling
+library(reshape2) # data manipulation
+library(plotly) # interactive plots
 
+# We also load an R script, with some useful functions we're going to use today.
+source(here("functions.R"))
 ```
 
 ## 4. Read and inspect data 📂
@@ -61,13 +68,27 @@ metadata_metabolites <-
 ```
 
 ```{r}
-# inspect your data
+# inspect your metabolites data
+metabolites[1:10, 1:10]
+```
+
+```{r}
+# inspect your metadata
+head(metadata_metabolites)
 ```
 
 **Task 1 - metabolites data:**
 
 ```{r}
+ncol(metabolites)
+```
 
+```{r}
+any(is.na(metabolites))
+```
+
+```{r}
+colSums(metabolites == 0)
 ```
 
 **Task 2 - metadata:**
@@ -96,16 +117,17 @@ metabolites_tan <-
 
 ### 5.2 Scaling and transformation
 
+Plot the histogram here:
 ```{r}
-# plot histogram here
+
 ```
 
 #### Auto scaling
 
 **TASK 1:**
 
+Inspect the `scale()` function:
 ```{r}
-# execute this code chunk
 ?base::scale
 ```
 
@@ -113,8 +135,8 @@ metabolites_tan <-
 
 **TASK 3 and 4:**
 
+Auto scale the data here and plot a histogram:
 ```{r}
-# auto scale the data here and plot a histogram
 autoscaled_metabolites_pqn <- 
 ```
 
@@ -122,8 +144,8 @@ autoscaled_metabolites_pqn <-
 
 **TASK 1:**
 
+Inspect the `scaling()` function:
 ```{r}
-# execute this code chunk
 ?MetabolAnalyze::scaling
 ```
 
@@ -131,8 +153,8 @@ autoscaled_metabolites_pqn <-
 
 **TASK 3 and 4:**
 
+Pareto scale the data here and plot a histogram:
 ```{r}
-# pareto scale the data here and plot a histogram
 pareto_metabolites_pqn <- 
 ```
 
@@ -140,8 +162,8 @@ pareto_metabolites_pqn <-
 
 **TASK 1 and 2:**
 
+Log transform the data here and plot a histogram:
 ```{r}
-# log transform the data here and plot a histogram
 log_metabolites_pqn <- 
 ```
 
@@ -149,8 +171,8 @@ log_metabolites_pqn <-
 
 **TASK 1 and 2:**
 
+Apply a square root transformation here and plot a histogram:
 ```{r}
-# apply a square root transformation here and plot a histogram
 sqrt_metabolites_pqn <- 
 ```
 
@@ -158,44 +180,66 @@ sqrt_metabolites_pqn <-
 
 ```{r}
 # Load the packages here
-
+library(factoextra) # PCA functions
+library(plotly) # interactive plots
 ```
 
 ### 6.1 PCA Model
 
 **TASK 1:**
 
+Perfom PCA:
 ```{r}
-# perform pca here
 pca <- 
+```
+
+```{r}
+str(pca)
 ```
 
 ### 6.2 Visualizations
 
+```{r}
+plot(pca)
+```
+
+Visualize the score plot:
 ```{r}
 
 ```
 
 ### 6.3 Loadings
 
+Visualize the loadings plot:
 ```{r}
 
 ```
 
+Select important metabolites based on a threshold:
+```{r}
+important_metabolites <- loadings$metabolite[which(abs(loadings$value) > 0.08 & loadings$variable == "PC1")]
+
+important_metabolites
+```
+
+
 ### 6.4 Biplot
 
+Visualize biplot:
 ```{r}
 
 ```
 
 ### 6.5 Outliers
 
+Plot an interactive ggplot:
 ```{r}
-# interactive ggplot
+
 ```
 
+Remove outliers and perfrom a new PCA: 
 ```{r}
-# remove outliers and perform and visualize a new pca model
+
 ```
 
 ## 7. Next! ⏩

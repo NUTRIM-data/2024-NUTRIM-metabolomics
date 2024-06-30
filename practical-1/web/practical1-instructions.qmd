@@ -149,15 +149,13 @@ colSums(metabolites == 0)
 Inspect the structure of the data. Tip: use `view()` or `structure()`
 
 ```{r}
-# write your code below
-
+# write your code in the notebook
 ```
 
 How many samples with different `Diagnosis` do we have? Tip: use `table()`
 
 ```{r}
-# write your code below
-
+# write your code in the notebook
 ```
 
 ::: {.callout-note collapse="true" appearance="simple"}
@@ -204,7 +202,6 @@ pqn(data_matrix)
 
 The function accepts a [`data_matrix`]{style="color: blue"} and return a pqn normalized matrix, with the same structure (metabolites in columns and samples in rows).
 
-###### **TASK 1**
 
 Normalize the data using **pqn normalization** and assign it to a new variable, e.g. `metabolites_pqn`.
 
@@ -224,7 +221,6 @@ We have provided TAN normalization in a function called `normalise_tan()`, which
 normalize_tan(data_matrix)
 ```
 
-###### **TASK 1**
 
 Normalize the metabolites data using **TAN normalizatio** and assign it to a new variable, e.g. `metabolites_tan`.
 
@@ -408,8 +404,7 @@ It's important to auto scale the data before PCA, to give the equal importance t
 Let's compute our first PCA:
 
 ```{r}
-# write your code here
-
+# write your code in the notebook:
 ```
 
 ::: {.callout-note collapse="true" appearance="simple"}
@@ -486,6 +481,7 @@ The larger variables pull the decomposition towards them, therefore we are not a
 ## Loadings 🚚
 
 From PCA model we also obtain our loadings. Let's visualize loadings plots (bar plots) for the first two PC's:
+
 ```{r}
 #| code-fold: true
 #| message: false
@@ -504,6 +500,7 @@ ggplot(loadings %>%
 ```
 
 We can set a threshold or choose top x metabolites, that have the biggest influence on the decomposition:
+
 ```{r}
 #| code-fold: true
 #| message: false
@@ -519,17 +516,19 @@ ggplot(loadings %>%
 ```
 
 To select the metabolites, that are over or below selected threshold, e.g. `0.08`, we can type:
+
 ```{r}
 important_metabolites <- loadings$metabolite[which(abs(loadings$value) > 0.08 & loadings$variable == "PC1")]
 important_metabolites
 
 ```
 
-## Biplot 
+## Biplot
 
 We can also visualize the scores and loadings at the same time! This is called **biplot**.
 
 For that, we can use `biplot`, but we are going to use `fviz_pca_biplot` from the `factoextra` package,which is an ggplot object:
+
 ```{r}
 fviz_pca_biplot(pca,
                 col.var = "#2E9FDF", # Variables color
