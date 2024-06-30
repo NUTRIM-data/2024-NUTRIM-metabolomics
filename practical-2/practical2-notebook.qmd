@@ -212,9 +212,11 @@ resLmpContributions$effectTable
 
 **5.3.5 Statistical testing**
 
+!!!! WARNING: don't execute this code chunk, it will crush the Posit environment (not enough RAM)
+
 ```{r}
 resLmpBootstrapTests <- lmpBootstrapTests(resLmpEffectMatrices = resLmpEffectMatrices, 
-                                          nboot = 100)
+                                          nboot = 1) # usually 1000 
 
 t(resLmpBootstrapTests$resultsTable)
 ```
