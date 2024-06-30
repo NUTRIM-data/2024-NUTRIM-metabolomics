@@ -12,9 +12,9 @@ This readme as webpage - https://david-barnett.github.io/2024-NUTRIM-microbiome/
 
 #### Practical 1 - basic concepts in metabolomics data analysis 
 
-https://github.com/michaljjskawinski/2024-NUTRIM-metabolomics/blob/main/practical-1/web/practical1-instructions.html
+https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/practical-1/web/practical1-instructions.html
 
 #### Practical 2 - more advanced methods
 
-https://github.com/michaljjskawinski/2024-NUTRIM-metabolomics/blob/main/practical-2/web/practical2-instructions.html
+https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/practical-2/web/practical2-instructions.html
 
