@@ -127,7 +127,7 @@ script_URF <- function(nr_itteration, real_data, nr_trees, nr_samples) {
 
 ##### **TASK 2**
 
-Let's perform our first URF! Call a function with 1500 trees and 8 samples in a terminal node. Limit the number of iterations up to 10, which will speed up the computations (generally we would use around 100 iterations). Assign the results to an object named `URF`.
+Let's perform our first URF! Call a function with 1000 trees and 8 samples in a terminal node. Limit the number of iterations up to 10, which will speed up the computations (generally we would use around 100 iterations). Assign the results to an object named `URF`.
 
 ::: {.callout-note collapse="true"}
 ### Do you need to scale the data?
@@ -145,7 +145,7 @@ URF is an non-linear method, therefore it will perform well with non-scaled data
 ```{r}
 #| message: false
 #| output: false
-URF <- script_URF(nr_itteration = 1, real_data = metabolites_pqn, nr_trees = 1500, nr_samples = 8)
+URF <- script_URF(nr_itteration = 1, real_data = metabolites_pqn, nr_trees = 1000, nr_samples = 8)
 ```
 :::
 
@@ -338,14 +338,16 @@ This results in creation of so called effect matrices for every factor and inter
 
 ### ASCA
 
-Now, we can apply PCA simultaneously to all effect matrices (therefore SCA- simultaneous component analysis). 
+Now, we can apply PCA simultaneously to all effect matrices (therefore SCA- simultaneous component analysis).
 
 ::: {.callout-note collapse="true"}
 ### Combined effect
+
 We can also combine the factors and interactions (by linear combinations) and apply PCA to the combined effect matrix, e.g. `Diagnosis + Age_group + Diagnosis:Age_group`, however then the interpretation gets more difficult.
 :::
 
 Perform PCA of each of the factors/interactions:
+
 ```{r}
 resASCA <- lmpPcaEffects(resLmpEffectMatrices = resLmpEffectMatrices,
                          method = "ASCA")
@@ -375,8 +377,9 @@ resLmpContributions$effectTable
 
 Here, PCs from each factor/interaction sums up a 100% for that PCA model. Note that we have more PCs for the residuals, but we only display the first 5.
 
-
 ### **Statistical testing**
+
+[WARNING: don't execute this part in your notebook, it will crush the Posit environment! Instead, look at the results below.]{style="color: red"}
 
 Okay, we've got the total contribution of each factor/interaction. Based on that, we see that `Diagnosis` contributes to 24.3% of variance in metabolites' profiles. But how can we know if this effect is significant? Here, we use bootstrapping with a big number of iterations, which will give us the p-values.
 
@@ -384,7 +387,7 @@ To test the significant of model effects by bootstrap with a reduced number of i
 
 ```{r}
 resLmpBootstrapTests <- lmpBootstrapTests(resLmpEffectMatrices = resLmpEffectMatrices, 
-                                          nboot = 100)
+                                          nboot = 1000)
 ```
 
 Display P-values :
@@ -400,6 +403,7 @@ This way, we display the total contribution of each factor/interaction and addit
 Each PCA model for a factor/interaction or a PCA model for the combined effect results in **scores** and **loadings**. That's why ASCA is a great tool, because it provides interpretability of the results.
 
 `Diagnosis` was significant from the bootsraping, but let's visualize a **score plot** for this factor:
+
 ```{r}
 #| code-fold: true
 lmpScorePlot(resASCA, effectNames = "Diagnosis",
@@ -417,19 +421,21 @@ lmpLoading1dPlot(resASCA, effectNames = "Diagnosis",
 
 For the `Diagnosis` effect, the score plots show a clear separation between the different levels on the first PC. The distinct separation of the groups suggests a strong effect of that factors, which is also confirmed by it's significance.
 
-
 ::: {.callout-note collapse="true"}
 ### What about the interaction?
 
 We can also visualize the scores and loadings plots for the interaction `Diagnosis:Age_group`:
+
 ```{r}
 #| code-fold: true
 lmpScorePlot(resASCA, effectNames = "Diagnosis:Age_group",
                           color = "Diagnosis", shape = "Age_group")
 ```
+
 Based on the scores plot, the interaction seems important, but its not significant in bootstrapping.
 
 Interactions can be further visualized with line plots:
+
 ```{r}
 #| code-fold: true
 lmpEffectPlot(resASCA, effectName = "Diagnosis:Age_group", x = "Diagnosis",
@@ -438,7 +444,8 @@ lmpEffectPlot(resASCA, effectName = "Diagnosis:Age_group", x = "Diagnosis",
 lmpEffectPlot(resASCA, effectName = "Diagnosis:Age_group", x = "Age_group",
               z = "Diagnosis")
 ```
-Based on the interaction plots, UC and CD groups are more similar for all ages, but the minors and adults nonIBD patient differ. 
+
+Based on the interaction plots, UC and CD groups are more similar for all ages, but the minors and adults nonIBD patient differ.
 :::
 
 # That's all folks!
