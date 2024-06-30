@@ -2,9 +2,11 @@
 
 ## General links
 
+This readme in html: [https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/](https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/)
+
 Timetable on [Google sheets](https://docs.google.com/spreadsheets/u/0/d/1mt0nUgz8h7Lax0L2wGjKzeZomPlQbVFaPmd1gahLUqA/edit?usp=sharing&pli=1)
 
-posit.cloud - https://posit.cloud
+posit.cloud - [https://posit.cloud](https://posit.cloud)
 
 
 
@@ -12,11 +14,11 @@ posit.cloud - https://posit.cloud
 
 #### Practical 1 - basic concepts in metabolomics data analysis 
 
-https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/practical-1/web/practical1-instructions.html
+- [Practical 1 instructions](https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/practical-1/web/practical1-instructions.html)
 
 #### Practical 2 - more advanced methods
 
-https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/practical-2/web/practical2-instructions.html
+- [Practical 2 instructions](https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/practical-2/web/practical2-instructions.html)
 
 
 ### Other links
