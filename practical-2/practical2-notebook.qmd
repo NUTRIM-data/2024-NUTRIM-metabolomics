@@ -17,7 +17,7 @@ number-sections: true
 
 This is a notebook for the second tutorial on metabolomics! Feel free to add notes and text where you want and code chunks to execute and copy the code.
 
-Please open .html file with the instructions for this tutorial , that you can find here: TODO
+Please open .html file with the instructions for this tutorial , that you can find here: [practical2-instructions](https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/practical-2/web/practical2-instructions.html)
 
 Remember to use the Visual mode of the notebook and uncheck "Render on Save" checkbox above!
 

@@ -202,7 +202,6 @@ pqn(data_matrix)
 
 The function accepts a [`data_matrix`]{style="color: blue"} and return a pqn normalized matrix, with the same structure (metabolites in columns and samples in rows).
 
-
 Normalize the data using **pqn normalization** and assign it to a new variable, e.g. `metabolites_pqn`.
 
 ```{r}
@@ -220,7 +219,6 @@ We have provided TAN normalization in a function called `normalise_tan()`, which
 #| output: asis
 normalize_tan(data_matrix)
 ```
-
 
 Normalize the metabolites data using **TAN normalizatio** and assign it to a new variable, e.g. `metabolites_tan`.
 
@@ -601,7 +599,7 @@ After removal of those outliers, new outliers can pop out. Remember, after any t
 
 -   At the next session after lunch, we will explore more fancy methods for metabolomics data analysis!
 
--   TODO: Click here: <https://github.com/michaljjskawinski/2024-NUTRIM-metabolomics/blob/main/practical-2/web/practical2-instructions.html>
+-   Click here for the instruction to the next tutorial: [practical2-instructions](https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/practical-2/web/practical2-instructions.html)
 
 # Session info
 

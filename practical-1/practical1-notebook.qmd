@@ -17,7 +17,7 @@ number-sections: true
 
 This is a notebook for the first tutorial on metabolomics! Feel free to add notes and text where you want and code chunks to execute and copy the code.
 
-Please open .html file with the instructions for this tutorial , that you can find here: TODO
+Please open .html file with the instructions for this tutorial , that you can find here: [practical1-instructions](https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/practical-1/web/practical1-instructions.html)
 
 Remember to use the Visual mode of the notebook and uncheck "Render on Save" checkbox above!
 
@@ -118,6 +118,7 @@ metabolites_tan <-
 ### 5.2 Scaling and transformation
 
 Plot the histogram here:
+
 ```{r}
 
 ```
@@ -127,6 +128,7 @@ Plot the histogram here:
 **TASK 1:**
 
 Inspect the `scale()` function:
+
 ```{r}
 ?base::scale
 ```
@@ -136,6 +138,7 @@ Inspect the `scale()` function:
 **TASK 3 and 4:**
 
 Auto scale the data here and plot a histogram:
+
 ```{r}
 autoscaled_metabolites_pqn <- 
 ```
@@ -145,6 +148,7 @@ autoscaled_metabolites_pqn <-
 **TASK 1:**
 
 Inspect the `scaling()` function:
+
 ```{r}
 ?MetabolAnalyze::scaling
 ```
@@ -154,6 +158,7 @@ Inspect the `scaling()` function:
 **TASK 3 and 4:**
 
 Pareto scale the data here and plot a histogram:
+
 ```{r}
 pareto_metabolites_pqn <- 
 ```
@@ -163,6 +168,7 @@ pareto_metabolites_pqn <-
 **TASK 1 and 2:**
 
 Log transform the data here and plot a histogram:
+
 ```{r}
 log_metabolites_pqn <- 
 ```
@@ -172,6 +178,7 @@ log_metabolites_pqn <-
 **TASK 1 and 2:**
 
 Apply a square root transformation here and plot a histogram:
+
 ```{r}
 sqrt_metabolites_pqn <- 
 ```
@@ -189,6 +196,7 @@ library(plotly) # interactive plots
 **TASK 1:**
 
 Perfom PCA:
+
 ```{r}
 pca <- 
 ```
@@ -204,6 +212,7 @@ plot(pca)
 ```
 
 Visualize the score plot:
+
 ```{r}
 
 ```
@@ -211,21 +220,23 @@ Visualize the score plot:
 ### 6.3 Loadings
 
 Visualize the loadings plot:
+
 ```{r}
 
 ```
 
 Select important metabolites based on a threshold:
+
 ```{r}
 important_metabolites <- loadings$metabolite[which(abs(loadings$value) > 0.08 & loadings$variable == "PC1")]
 
 important_metabolites
 ```
 
-
 ### 6.4 Biplot
 
 Visualize biplot:
+
 ```{r}
 
 ```
@@ -233,11 +244,13 @@ Visualize biplot:
 ### 6.5 Outliers
 
 Plot an interactive ggplot:
+
 ```{r}
 
 ```
 
-Remove outliers and perfrom a new PCA: 
+Remove outliers and perfrom a new PCA:
+
 ```{r}
 
 ```
