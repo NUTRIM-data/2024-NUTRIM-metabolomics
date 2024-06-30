@@ -89,6 +89,7 @@ script_URF <- function(nr_itteration, real_data, nr_trees, nr_samples) {
   #Outputs:
   #pc --> pca score plot
   #pr--> % of variance per PC
+  #mean proximity matrix
   require(randomForest)
   require(factoextra)
   

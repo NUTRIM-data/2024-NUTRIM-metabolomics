@@ -1,0 +1,241 @@
+---
+title: "Day 2 - Practical 2 - more advanced methods for metabolomics data analysis"
+subtitle: "2024 NUTRIM microbiome & metabolome workshop"
+author: YOUR-NAME
+date: last-modified
+keep-md: false
+embed-resources: true
+format: html
+theme: 
+  light: flatly
+  dark: darkly
+toc: true
+number-sections: true
+---
+
+## 1A. Intro + using Quarto {#using-quarto}
+
+This is a notebook for the second tutorial on metabolomics! Feel free to add notes and text where you want and code chunks to execute and copy the code.
+
+Please open .html file with the instructions for this tutorial , that you can find here: TODO
+
+Remember to use the Visual mode of the notebook and uncheck "Render on Save" checkbox above!
+
+## 1B. Using Quarto - reminder2 📝
+
+During this workshop, we will write code and notes in Quarto documents.
+
+Write notes in "[markdown](https://quarto.org/docs/authoring/markdown-basics.html "Markdown is plain text, with special characters to indicate headings, bold text, links etc"){target="_blank"}", e.g. your intentions, hypotheses, observations, etc.
+
+```{r}
+# write code in "chunks" (and comments too, using the # symbol)
+print("Hello World")
+```
+
+Insert a chunk with option +cmd + I (Mac) or ctrl+ shift + I (Windows)
+
+```{r, eval=FALSE}
+print("Run this one line with ctrl + enter, or cmd + enter on macOS")
+print("or run a whole chunk with ctrl/cmd + SHIFT + enter")
+```
+
+Run all previous chunks by clicking the first button in the corner of the chunk.
+
+You can add notes wherever you want and new code chunks!
+
+## 2. Load R packages and source functions 📦
+
+```{r}
+library(here)
+library(tidyverse) # data cleaning 
+library(ggplot2) # visualizations
+source(here("functions.R"))  # URF functions
+library(randomForest) 
+library(factoextra) 
+library(limpca) # ASCA
+```
+
+## 3. Read the data 📂
+
+```{r}
+# Read metabolites data table
+metabolites <- read.csv(file = here("data:papa2012/processed/metabolites_short.csv"), row.names = 1)
+
+# PQN normalize it
+metabolites_pqn <- pqn(metabolites)
+
+# Read metadata
+metadata_metabolites <- read.csv(file = here("data:papa2012/processed/metadata_metabolites.csv"), row.names = 1)
+```
+
+## 4. URF 🌲🌲🌲
+
+**TASK 1:**
+
+**TASK 2:**
+
+Perform URF:
+
+```{r}
+
+```
+
+**TASK 3:**
+
+Look at the structure of the resulting URF model:
+
+```{r}
+str(URF)
+```
+
+**TASK 4:**
+
+Plot URF score plot:
+
+```{r}
+
+```
+
+## 5. ASCA
+
+**TASK 1:**
+
+Read metadata_metabolites_asca.csv. How many samples do we have now?
+
+```{r}
+# plot the URF score plot
+
+```
+
+**TASK 2:**
+
+```{r}
+metabolites_asca <- metabolites_pqn[which(rownames(metabolites_pqn) %in% metadata_metabolites_asca$SampleID), ]
+```
+
+**TASK 3:**
+
+Create `Age_group` vector:
+
+```{r}
+
+```
+
+**TASK 3:**
+
+Check the data balance:
+
+```{r}
+
+```
+
+### 5.2 Create an ASCA object
+
+Create an empty list:
+
+```{r}
+ASCA_model <- list()
+```
+
+Add outcomes:
+
+```{r}
+ASCA_model <- list()
+```
+
+Add design:
+
+```{r}
+ASCA_model$design <- metadata_metabolites_asca %>% 
+  dplyr::select(c("Diagnosis", "Age_group")) %>%
+  dplyr::mutate(Diagnosis = factor(Diagnosis, levels = c("nonIBD", "CD", "UC")),
+                Age_group = factor(Age_group, levels = c("minor", "adult")))
+
+# Row names of the design matrix need to be the same as of the outcomes (sample names)
+rownames(ASCA_model$design) <- metadata_metabolites_asca$SampleID
+```
+
+Plot design matrix:
+
+```{r}
+plotDesign(design = ASCA_model$design, x = "Diagnosis", y = "Age_group",
+    title = "Design of the metabolomics dataset")
+```
+
+Add formula:
+
+```{r}
+ASCA_model$formula <- "outcomes ~ Diagnosis + Age_group + Diagnosis:Age_group"
+```
+
+### 5.3 Perform ASCA
+
+**5.3.1 Generate and print the model matrix:**
+
+```{r}
+resLmpModelMatrix <- lmpModelMatrix(ASCA_model)
+head(resLmpModelMatrix$modelMatrix)
+```
+
+**5.3.2 Decompose the model matrix:**
+
+```{r}
+resLmpEffectMatrices <- lmpEffectMatrices(resLmpModelMatrix)
+```
+
+**5.3.3 ASCA**
+
+```{r}
+resASCA <- lmpPcaEffects(resLmpEffectMatrices = resLmpEffectMatrices,
+                         method = "ASCA")
+```
+
+**5.3.4 Check contributions:**
+
+```{r}
+resLmpContributions <- lmpContributions(resASCA)
+```
+
+-   Total variance
+
+```{r}
+resLmpContributions <- lmpContributions(resASCA)
+
+resLmpContributions$totalContribTable
+```
+
+-   PCs contributions in each model
+
+```{r}
+resLmpContributions$effectTable
+```
+
+**5.3.5 Statistical testing**
+
+```{r}
+resLmpBootstrapTests <- lmpBootstrapTests(resLmpEffectMatrices = resLmpEffectMatrices, 
+                                          nboot = 100)
+
+t(resLmpBootstrapTests$resultsTable)
+```
+
+\*\*5.3.6 Scores and loadings plots\*
+
+```{r}
+lmpScorePlot(resASCA, effectNames = "Diagnosis",
+                          color = "Diagnosis")
+
+lmpLoading1dPlot(resASCA, effectNames = "Diagnosis",
+                 axes = 1, # only PC1
+                  xaxis_type = "character",)
+```
+
+## 6. Finish! ⏩
+
+-   Good job! 🎉 You have finished this tutorial! Now you can use also URF and ASCA in R!
+
+## 7. Session info
+
+```{r}
+sessioninfo::session_info()
+```

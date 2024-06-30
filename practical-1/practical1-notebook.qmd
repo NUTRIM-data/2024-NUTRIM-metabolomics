@@ -1,597 +1,204 @@
 ---
 title: "Day 2 - Practical 1 - basic metabolomics data analysis"
 subtitle: "2024 NUTRIM microbiome & metabolome workshop"
-author: Michal Skawinski
-editor: visual
+author: YOUR-NAME
 date: last-modified
 keep-md: false
+embed-resources: true
+format: html
 theme: 
   light: flatly
   dark: darkly
-format: html
-embed-resources: true
-code-block-border-left: true
-code-block-bg: true
 toc: true
-toc-location: right
-toc-depth: 4
-toc-expand: 3
 number-sections: true
-number-depth: 3
-fig-align: center
-fig-dpi: 300
-fig-width: 7.5
-fig-height: 5
-fig-responsive: true
-code-tools: true
-code-fold: false
-code-link: true
-code-annotations: below
-lightbox: auto
-cache: false
 ---
 
-# Intro
+## 1. Intro {#using-quarto}
 
-Today we're going to look at the metabolomics data, from the study on IBD patients and controls. Note that those data corresponds to the same samples we used yesterday. It's just another omics, that requires a different approach to data analysis 😉
+This is a notebook for the first tutorial on metabolomics! Feel free to add notes and text where you want and code chunks to execute and copy the code.
 
-::: {.callout-note collapse="true"}
-### A note on metabolomics data processing
+Please open .html file with the instructions for this tutorial , that you can find here: TODO
 
-The data we will use today come from Liquid Chromatography-Mass Spectrometry (**LC-MS**) profiling of feces' metabolites and has already been preprocessed to a table with metabolites' relative concentrations for each sample.
+Remember to use the Visual mode of the notebook and uncheck "Render on Save" checkbox above!
 
-#### Raw data and chromatograms
+## 2. Using Quarto - reminder 📝
 
-Usually, for the detection of metabolites Nuclear Magnetic Resonance or mass spectrometry (MS), coupled to other technologies (like liquid or gas chromatography) is used, depending on the sample characteristics and study aims.
+During this workshop, we will write code and notes in Quarto documents.
 
-The raw MS data consists of chromatograms showing peaks of intensity of detected metabolites over time (see @fig-tic), mass spectrum (see @fig-ms) and retention time.
-
-![Total Ion Chromatogram](images/TIC.png){#fig-tic fig-align="center"}
-
-![Mass spectrum](images/ms.png){#fig-ms fig-align="center"}
-
-#### Common preprocessing steps
-
-In short, data processing perform peaks detection, retention time alignment and integration of peak areas. Additionall steps include removing of zero's and imputation of missing values. However, today we will only focus on the important concepts of the preprocessed metabolomics data analysis.
-
-PS. The detailed data generation protocols can be found [here](https://ibdmdb.org/protocols).
-:::
-
-In the first part, we're going to foucus on the basic concepts in metabolomics data analysis: data pretreatment and dimensionality reduction (PCA).
-
-# Learning goals 💪
-
--   Understand the effect of data pretreatment (normalization, transformation and scaling) on metabolomics data analysis
--   Read and inspect the data in R
--   Apply different pretreatment methods in R
--   Perform PCA analysis and visualization in R
-
-# Load R packages and some functions 📦
+Write notes in "[markdown](https://quarto.org/docs/authoring/markdown-basics.html "Markdown is plain text, with special characters to indicate headings, bold text, links etc"){target="_blank"}", e.g. your intentions, hypotheses, observations, etc.
 
 ```{r}
-#| output: false
-library(here)
-library(tidyverse)
-library(MetabolAnalyze) # contains pareto-scaling
+# write code in "chunks" (and comments too, using the # symbol)
+print("Hello World")
 ```
 
-```{r}
-# We also load an R script, with some useful functions we're going to use today.
-source(here("functions.R"))
+Insert a chunk with option +cmd + I (Mac) or ctrl+ shift + I (Windows)
+
+```{r, eval=FALSE}
+print("Run this one line with ctrl + enter, or cmd + enter on macOS")
+print("or run a whole chunk with ctrl/cmd + SHIFT + enter")
 ```
 
-# Read and inspect data 🔍
+Run all previous chunks by clicking the first button in the corner of the chunk.
 
-Read the metabolites' relative concentrations table, stored in a a `.csv` file.
+You can add notes wherever you want and new code chunks!
 
-```{r}
-metabolites <- read.csv(file = here("data:papa2012/processed/metabolites_short.csv"), row.names = 1)
-```
+## 3. Load R packages 📦
 
-```{r}
-metabolites[1:10, 1:10]
-```
-
-Read the metabolites metadata file, stored in a `.cvs` file.
+It is good practice to load all the packages and source or files you need at the top of your notebook.
 
 ```{r}
-metadata_metabolites <- read.csv(file = here("data:papa2012/processed/metadata_metabolites.csv"), row.names = 1)
-```
-
-```{r}
-head(metadata_metabolites)
-```
-
-::: {.callout-note collapse="true"}
-### What is in my data?
-
-#### Metabolites
-
--   Samples are stored in rows, e.g. `CSM5FZ3T`, `CSM5FZ44`
--   Metabolites are stored in columns, in the form of relative concentrations
--   Note, that the metabolites don't have identifiers. It's because we have not identified the specific metabolites yet and those variables represent a detected ion with unique properties, based on which we can later try to identify the metabolites by comparing retention times and mass spectra with known standards or databases.
--   Additionally, to reduce the computation time we have chosen only a subset of the original metabolites and samples.
-
-#### Metadata
-
--   Information on sample IDs, participant IDs, age, diagnosis and sex.
--   This makes it possible to compare groups and explore the differences and similarities between them.
-:::
-
-Now let's inspect those data more.
-
-::: panel-tabset
-##### Task1 - metabolites data
-
-How many metabolites are there?
-
-```{r}
-ncol(metabolites)
-```
-
-Are there any missing data?
-
-```{r}
-any(is.na(metabolites))
-```
-
-How many zero's do we have per metabolite?
-
-```{r}
-colSums(metabolites == 0)
-```
-
-##### Task 2 - metadata
-
-Inspect the structure of the data. Tip: use `view()` or `structure()`
-
-```{r}
-# write your code below
 
 ```
 
-How many samples with different `Diagnosis` do we have? Tip: use `table()`
+## 4. Read and inspect data 📂
 
 ```{r}
-# write your code below
+# give your objects short but informative names!
+metabolites <- 
+metadata_metabolites <- 
+  
+```
+
+```{r}
+# inspect your data
+```
+
+**Task 1 - metabolites data:**
+
+```{r}
 
 ```
 
-::: {.callout-note collapse="true" appearance="simple"}
-##### SOLUTION:
+**Task 2 - metadata:**
 
 ```{r}
-structure(metadata_metabolites)
+
 ```
 
-The metadata is the same as for the microbiome ! 👀
+## 5. Data pretreatment **🔍**
+
+### 5.1 Normalization
+
+#### PQN normalization
 
 ```{r}
-table(metadata_metabolites$Diagnosis)
-```
-:::
-:::
-
-# Data preatreatment 🔍
-
-Before we can start using some more fancy [unsupervised]{.underline} or [supervised]{.underline} techniques, we need to understand the importance of data **preatreatment**, that includes:
-
-1.  [normalization](#normalization),
-
-2.  [transformation](#scaling_transformation), and
-
-3.  [scaling](#scaling_transformation).
-
-We will explore their impact and importance on the data distribution as well as common methods in metabolomics.
-
-## Normalization: {#normalization}
-
-We apply normalization of our data to reduce the *effect size* of huge variations in the metabolite concentration and make the samples more comparable. Normalization is *sample-wise* (per sample), whereas scaling or transformation are *column-wise* (per metabolite).
-
-::: panel-tabset
-##### Probabilitic Quotient Normalization (pqn)
-
-The structure of the function we have provided is as follows:
-
-```{r}
-#| eval: false
-#| output: asis
-pqn(data_matrix)
+# pqn normalize the data here
+metabolites_pqn <- 
 ```
 
-The function accepts a [`data_matrix`]{style="color: blue"} and return a pqn normalized matrix, with the same structure (metabolites in columns and samples in rows).
-
-###### **TASK 1**
-
-Normalize the data using **pqn normalization** and assign it to a new variable, e.g. `metabolites_pqn`.
+#### TAN normalization
 
 ```{r}
-metabolites_pqn <- pqn(metabolites)
+# apply TAN normalization
+metabolites_tan <- 
 ```
 
-##### Total Area Normalization (TAN)
-
-For each sample, every metabolite intensity value is divided by the total sum of all metabolite intensity values measured in that sample (`NA` values ignored by default), before multiplication by 100. The unit is %.
-
-We have provided TAN normalization in a function called `normalise_tan()`, which is analogical to the pqn function:
+### 5.2 Scaling and transformation
 
 ```{r}
-#| eval: false
-#| output: asis
-normalize_tan(data_matrix)
+# plot histogram here
 ```
 
-###### **TASK 1**
+#### Auto scaling
 
-Normalize the metabolites data using **TAN normalizatio** and assign it to a new variable, e.g. `metabolites_tan`.
-
-```{r}
-metabolites_tan <- normalize_tan(metabolites)
-```
-:::
-
-From here, we are going to use pqn normalized metabolites data for consequent analysis.
-
-## Scaling & transformation {#scaling_transformation}
-
-Unlike normalization or scaling, **data transformation** is a nonlinear pretreatment method. It is applied to a normalized data to **correct for the data heteroscedasticity and skewness**, transforming the distribution closer to the Gaussian one, and stabilizing the variance.
-
-**Data scaling** aims to c**orrect for between-compounds variation** by applying a scaling factor to the variables (which can vary for each metabolite) and give them a comparable influence on data variance.
-
-Moreover, many multivariate methods require scaled or transformed data to work properly. Ther
-
-Let's inspect how the distribution changes before and after transformation/scaling, based on the first metabolite in our data:
+**TASK 1:**
 
 ```{r}
-hist(metabolites_pqn[,1],
-     main = "Original pqn normalized data",
-     xlab = colnames(metabolites_pqn)[1])
-```
-
-::: panel-tabset
-##### Auto scaling
-
-Auto scaling is already implemented in the base R, as a `scale()` function.
-
-###### **TASK 1**
-
-Inspect the `scale()` function. A manual in the 'Help' tab of RStudio should open providing explanation and example usage of the function:
-
-```{r}
-# execute the code ----->
+# execute this code chunk
 ?base::scale
 ```
 
-###### **TASK 2**
+**TASK 2:**
 
-Based on the information in the manual answer the following question: [what arguments does the `scale()` function specify and what do they control?]{.underline}
-
-###### **TASK 3**
-
-Let's **auto scale** the data. For this, we need to specify parameter's values `center=TRUE` and `scale=TRUE`.
+**TASK 3 and 4:**
 
 ```{r}
-autoscaled_metabolites_pqn <- scale(metabolites_pqn,center = TRUE, scale = TRUE)
+# auto scale the data here and plot a histogram
+autoscaled_metabolites_pqn <- 
 ```
 
-###### **TASK 4**
+#### Pareto scaling
 
-Let's scale the data and plot the distribution of the first metabolite after **auto scaling**.
-
-```{r}
-hist(autoscaled_metabolites_pqn[,1],
-     main = "Auto scaling",
-     xlab = colnames(metabolites_pqn)[1])
-```
-
-##### Pareto scaling
-
-To compute pareto scaling, we can use `scaling()` function from the `MetabolAnalyze` package.
-
-###### **TASK 1**
-
-Inspect the `scaling()` function. A manual in the 'Help' tab of RStudio should open providing explanation and example usage of the function:
+**TASK 1:**
 
 ```{r}
-# execute the code ----->
+# execute this code chunk
 ?MetabolAnalyze::scaling
 ```
 
-###### **TASK 2**
+**TASK 2:**
 
-Based on the information in the manual answer the following question: [How does pareto scaling work?]{.underline}
-
-###### **TASK 3**
-
-Let's scale the data using **pareto scaling**. We need to specify a value of an argument `type`.
+**TASK 3 and 4:**
 
 ```{r}
-pareto_metabolites_pqn <- scaling(metabolites_pqn, type = "pareto")
+# pareto scale the data here and plot a histogram
+pareto_metabolites_pqn <- 
 ```
 
-###### **TASK 4**
+#### Log transformation
 
-Let's plot the distribution of the first metabolite after **pareto scaling**.
+**TASK 1 and 2:**
 
 ```{r}
-hist(pareto_metabolites_pqn[,1],
-     main = "Pareto scaling",
-     xlab = colnames(metabolites_pqn)[1])
+# log transform the data here and plot a histogram
+log_metabolites_pqn <- 
 ```
 
-##### Log transformation
+#### Square root transformation
 
-We have already explored the concept of log transformation yesterday.
-
-To log transform our data, we can simply use `log()`. By default, log10 is calculated, but we can specify the base it in the `base` argument of the function:
+**TASK 1 and 2:**
 
 ```{r}
-#| eval: false
-#| #| output: asis
-log(x, base)
+# apply a square root transformation here and plot a histogram
+sqrt_metabolites_pqn <- 
 ```
 
-###### **TASK 1**
-
-Let's perfom **log transformation** on our data using 10 as a base. PS. Remember to add a pseudo-count to data.
+## 6. Principal Component Analysis
 
 ```{r}
-log_metabolites_pqn <- log(metabolites_pqn +1)
+# Load the packages here
+
 ```
 
-###### **TASK 2**
+### 6.1 PCA Model
 
-Let's plot the distribution of the first metabolite after **log transformation**.
+**TASK 1:**
 
 ```{r}
-hist(log_metabolites_pqn[,1],
-     main = "Log transformation",
-     xlab = colnames(metabolites_pqn)[1])
+# perform pca here
+pca <- 
 ```
 
-##### Square root transformation
-
-To square root transform our data, we can simply use `sqrt()`.
-
-###### **TASK 1**
-
-Let's perform **square root transformation** on the data.
+### 6.2 Visualizations
 
 ```{r}
-sqrt_metabolites_pqn <- sqrt(metabolites_pqn)
+
 ```
 
-###### **TASK 2**
-
-Let's plot the distribution of the first metabolite after **log transformation**.
+### 6.3 Loadings
 
 ```{r}
-hist(sqrt_metabolites_pqn[,1],
-     main = "Square root transformation",
-     xlab = colnames(metabolites_pqn)[1])
+
 ```
-:::
 
-# Principal Component Analysis
-
-We are going to run some PCA analysis on metabolites data and plot the results. It's a great **unsupervised tool** to explore the data and identify any potential outliers, clusterings and structure in the data.
-
-Let's load the useful packages first, `factoextra` and `plotly`:
+### 6.4 Biplot
 
 ```{r}
-#| output: false
-library(factoextra) # PCA functions
-library(plotly) # interactive plots
+
 ```
 
-## PCA model
-
-To perform PCA, we can use `prcomp` function, which has the following structure:
+### 6.5 Outliers
 
 ```{r}
-#| eval: false
-#| output: asis
-prcomp(data, 
-       center = TRUE, 
-       scale = TRUE)
+# interactive ggplot
 ```
-
-Note, that `prcomp` automatically performs auto scaling, however we can control this with parameters `center` and `scale`.
-
-It's important to auto scale the data before PCA, to give the equal importance to variables in the data, to avoid them "dragging" the decomposition towards some. variables.
-
-#### **TASK 1**
-
-Let's compute our first PCA:
 
 ```{r}
-# write your code here
-
+# remove outliers and perform and visualize a new pca model
 ```
 
-::: {.callout-note collapse="true" appearance="simple"}
-##### SOLUTION:
-
-```{r}
-pca <- prcomp(metabolites_pqn,
-       center = TRUE, 
-       scale = TRUE)
-```
-:::
-
-Inspect the structure of the resulting model. Use `str()`.
-
-```{r}
-str(pca)
-```
-
-::: {.callout-note collapse="true"}
-### What does the resulting model contain?
-
-1.  **sdev** - the standard deviations of the principal components
-
-2.  **rotation** - variable loadings
-
-3.  **x** - scores
-:::
-
-## Visualizing the results 🎇
-
-We can visualize the percentage of explained varaince for each compount using plot.
-
-```{r}
-plot(pca)
-```
-
-Let's try to plot the score plot of the first PC against the second and visualize the Diagnosis! We also plot the explained variance of those component, by using `get_eigenvalue()` function on pca model.
-
-```{r, message=FALSE}
-#| fig-align: "center"
-#| code-fold: true
-ggplot(pca$x, aes(x = PC1, 
-                  y = PC2,
-                  color = metadata_metabolites$Diagnosis)) +
-  geom_point() +
-  labs(x = paste0("PC1 (",round(get_eigenvalue(pca)[1,2],2),"%)"), 
-       y =  paste0("PC2 (",round(get_eigenvalue(pca)[2,2],2),"%)")) +
-  theme_bw()
-```
-
-::: {.callout-note collapse="true"}
-##### What happens if we don't auto scale?
-
-Let's look at the score plot, if we would skip auto scaling.
-
-```{r, message=FALSE}
-#| fig-align: "center"
-#| code-fold: true
-pca_plain <- prcomp(metabolites_pqn, 
-       center = FALSE, 
-       scale = FALSE)
-ggplot(pca_plain$x, aes(x = PC1, 
-                        y = PC2,
-                        color = metadata_metabolites$Diagnosis)) +
-  geom_point() +
-  labs(x = paste0("PC1 (",round(get_eigenvalue(pca_plain)[1,2],2),"%)"), 
-       y =  paste0("PC2 (",round(get_eigenvalue(pca_plain)[2,2],2),"%)")) +
-  theme_bw()
-```
-
-The larger variables pull the decomposition towards them, therefore we are not able to distinguish between variables.
-:::
-
-## Loadings 🚚
-
-From PCA model we also obtain our loadings. Let's visualize loadings plots (bar plots) for the first two PC's:
-```{r}
-#| code-fold: true
-# First, we need to reshape our data into a long format using melt() function:
-library(reshape2)
-loadings <- melt(as.data.frame(pca$rotation) %>%
-                   mutate(metabolite = rownames(pca$rotation)),
-                 id.vars = "metabolite") 
-
-ggplot(loadings %>%
-         filter(variable %in% c("PC1", "PC2")), 
-            aes(x = metabolite, y = value)) +
-  geom_bar(stat="identity", alpha = 0.8, position = "stack", width = 0.5) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90)) +
-  facet_wrap(~variable, ncol = 2)
-```
-
-We can set a threshold or choose top x metabolites, that have the biggest influence on the decomposition:
-```{r}
-#| code-fold: true
-ggplot(loadings %>%
-         filter(variable %in% c("PC1", "PC2")), 
-            aes(x = metabolite, y = value)) +
-  geom_bar(stat="identity", alpha = 0.8, position = "stack", width = 0.5) +
-  theme_bw() +
-  geom_hline(yintercept = c(0.08, -0.08), linetype="dotted", size = 0.3, color = "red") +
-  theme(axis.text.x = element_text(angle = 90)) +
-  facet_wrap(~variable, ncol = 2)
-```
-
-To select the metabolites, that are over or below selected threshold, e.g. `0.08`, we can type:
-```{r}
-important_metabolites <- loadings$metabolite[which(abs(loadings$value) > 0.08 & loadings$variable == "PC1")]
-important_metabolites
-
-```
-
-## Biplot 
-
-We can also visualize the scores and loadings at the same time! This is called **biplot**.
-
-For that, we can use `biplot`, but we are going to use `fviz_pca_biplot` from the `factoextra` package,which is an ggplot object:
-```{r}
-fviz_pca_biplot(pca,
-                col.var = "#2E9FDF", # Variables color
-                col.ind = "#696969",  # Individuals color
-                select.var = list(name = important_metabolites), # Plot only important metabolites
-                label = "var" # label only variables
-                
-)
-```
-
-## Outliers
-
-Notice on our scales PCA plot how some of the samples lay further away from the clump of points. Those points are potential **outliers**.
-
-We can make an interactive plot and inspect which samples are outlying by pointing a cursor over points. For that, we can use `ggplotly` function from `plotly` package.
-
-```{r, message=FALSE}
-#| fig-align: "center"
-#| code-fold: true
-p <- ggplot(as.data.frame(pca$x), aes(x = PC1, 
-                       y = PC2, 
-                       z = rownames(pca$x),
-                       color = metadata_metabolites$Diagnosis)) +
-  geom_point() +
-  theme_bw()
-
-ggplotly(p)
-```
-
-Let's remove the outliers and see how it changes the results.
-
-::: {.callout-important collapse="true"}
-##### Watch out when removing outliers!
-
-Outliers can be due to the errors in sampling, but they also result from an important biological property. Before removing any outliers, it's important to further check why those samples are different from the rest and decide on what to do with them.
-:::
-
-To remove outliers, we can either filter by the scores values, by using `which()` or directly by names. For example:
-
-```{r, message=FALSE}
-#| eval: false
-#| output: false
-metabolites_pqn[which(! metadata_metabolites$SampleID %in% c("PSM7J177", "HSM6XRS8")), ]
-```
-
-will filter out the samples, that are not any of the specified ones. Note `!` at the beggining of the function, which can be translated to "not".
-
-Let's remove samples with `PC2 > 20`and perform pca on that.
-
-```{r, message=FALSE}
-#| fig-align: "center"
-#| code-fold: true
-pca_reduced <- prcomp(metabolites_pqn[which(pca$x[,2] <= 20),] , 
-       center = TRUE, 
-       scale = TRUE)
-ggplot(pca_reduced$x, aes(x = PC1, 
-                        y = PC2,
-                        color = metadata_metabolites$Diagnosis[which(pca$x[,2] <= 20)])) +
-  geom_point() +
-  labs(x = paste0("PC1 (",round(get_eigenvalue(pca_reduced)[1,2],2),"%)"), 
-       y =  paste0("PC2 (",round(get_eigenvalue(pca_reduced)[2,2],2),"%)")) +
-  theme_bw()
-```
-
-After removal of those outliers, new outliers can pop out. Remember, after any treatment that changes the distances between samples (e.g. log transformation), the identified outliers can differ.
-
-# Next ⏭️
+## 7. Next! ⏩
 
 -   Good job! 🎉 You have finished this tutorial! Now you should be able to use different pretreatment methods and apply PCA in R.
 
@@ -599,12 +206,10 @@ After removal of those outliers, new outliers can pop out. Remember, after any t
 
 -   TODO: Click here: <https://github.com/michaljjskawinski/2024-NUTRIM-metabolomics/blob/main/practical-2/web/practical2-instructions.html>
 
-# Session info
+## 8. Session info
 
-<details>
+For reproducibility, it is useful to record the packages and versions used in your analyses. This is easy to do with `sessioninfo::session_info()`.
 
 ```{r}
 sessioninfo::session_info()
 ```
-
-</details>
