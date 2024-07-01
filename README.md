@@ -15,13 +15,15 @@ posit.cloud - [https://posit.cloud](https://posit.cloud)
 #### Practical 1 - basic concepts in metabolomics data analysis 
 
 - [Practical 1 instructions](https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/practical-1/web/practical1-instructions.html)
+- Slides:
 
 #### Practical 2 - more advanced methods
 
 - [Practical 2 instructions](https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/practical-2/web/practical2-instructions.html)
+- Slides: 
 
 
 ### Other links
 
-- GitHub repo for source material: https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/
+- GitHub repo for source material: [https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/](https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/)
 
