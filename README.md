@@ -15,7 +15,7 @@ posit.cloud - [https://posit.cloud](https://posit.cloud)
 #### Practical 1 - basic concepts in metabolomics data analysis 
 
 - [Practical 1 instructions](https://michaljjskawinski.github.io/2024-NUTRIM-metabolomics/practical-1/web/practical1-instructions.html)
-- Slides: [here](https://maastrichtuniversity-my.sharepoint.com/:p:/r/personal/a_smolinska_maastrichtuniversity_nl/Documents/Presentation_data_analysis_Nutrim_metabolomics.pptx?d=w718181632b7649dcac174c5afd156519&csf=1&web=1&e=0uf0f0)
+- Slides: [One Drive UM]([https://maastrichtuniversity-my.sharepoint.com/:p:/r/personal/a_smolinska_maastrichtuniversity_nl/Documents/Presentation_data_analysis_Nutrim_metabolomics.pptx?d=w718181632b7649dcac174c5afd156519&csf=1&web=1&e=0uf0f0](https://maastrichtuniversity-my.sharepoint.com/:b:/g/personal/michal_skawinski_maastrichtuniversity_nl/EUNzXV0bsohLv2yx5rTUT1EB5aSSBFzPdCIbcl4e5WVw1w?e=nKEKLU)) (Make sure to use University email)
 
 #### Practical 2 - more advanced methods
 
